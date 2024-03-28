@@ -8,7 +8,8 @@ const { promisify } = require('util');
 const {Sequelize}= require('sequelize');
 const sequelize = new Sequelize({
   dialect:'sqlite',
-  storage:'./BD/dbVendas.db'
+  storage:'./BD/dbVendas.db',
+  logging:false
 });
 //---------------------------------------------------------------------------------
 
@@ -16,7 +17,7 @@ const sequelize = new Sequelize({
 const {DataTypes} = require('sequelize');
 const { error } = require('console');
 //Tabela Cliente
- const Clientes=sequelize.define('Clientes',{
+ const Clientes=sequelize.define('tb_clientes',{
   //Definindo campos
     CPF: {
       type: DataTypes.STRING,
@@ -192,6 +193,7 @@ async function inserirMesa(vNomeMesa){
     console.error('Erro ao inserir nome da mesa.',error);
   }
 }
+//inserindo dados do produto
 async function inserirProduto(vDescProd,vQtdProd,vVlProd){
   const maxId=await Produtos.findAll({
     attributes:[[sequelize.fn('max',sequelize.col('id')),'lastID']], raw:true,});
@@ -207,6 +209,20 @@ async function inserirProduto(vDescProd,vQtdProd,vVlProd){
     console.error('Erro ao inserir produto.',error);
   }
 }
+//inserindo tipo de pagamento
+async function inserirTipo(vDescPag){
+  const maxId=await Tipos.findAll({
+    attributes:[[sequelize.fn('max',sequelize.col('id')),'lastID']], raw:true,});
+    const nextid = maxId[0].lastID +1 ||1;
+  try {
+    const pTipo = await Tipos.create({
+      id:nextid,
+      descricao:vDescPag,
+    });
+  } catch (error) {
+    console.error('Erro ao inserir tipos de pagamento.',error);
+  }
+}
 //-----------------------------------------------------
 
 //Função para criar o banco de dados
@@ -218,7 +234,7 @@ async function syncDatabase() {
     console.error('Erro ao sincronizar o banco de dados.', error);
   }
 }
-//----------------------------------
+//-----------------------------------------------------------------------
 //função verifica se o bd não existe, senão existe chama função criar BD
 function CriarTabelas(){
   const filePath='./BD/dbVendas.db';
@@ -226,7 +242,11 @@ function CriarTabelas(){
     syncDatabase();
   };
 }
-//-------
+//-----------------------------------------------------------------------
+
+
+
+
 
 //exporta os modulos e funções 
 module.exports = {
@@ -240,5 +260,6 @@ module.exports = {
   CriarTabelas,
   inserirCliente,
   inserirMesa,
-  inserirProduto
+  inserirProduto,
+  inserirTipo
 };
