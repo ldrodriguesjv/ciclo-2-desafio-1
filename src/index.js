@@ -5,9 +5,10 @@ const promptEntrada = require('prompt-sync')({sigint:true});
 const promptOpcao = require('prompt')
 //execução de comandos no terminal
 const {exec}=require('child_process');
+const { DOUBLE, INTEGER, STRING } = require('sequelize');
 //script.CriarTabelas();
 script.CriarTabelas();
-
+let continuar ='N';
 
 //let pDescricao=promptEntrada('Desccrição: ');
 //let pQtd = promptEntrada('Quantidade: ');
@@ -31,17 +32,17 @@ function exibirMenu(){
     console.log('----------------------------------------------');
     console.log('\n Bem-vindo ao restaurante LA CARTE!!');
     console.log('Seleciona umas das opções abaixo:');
-    console.log('1. Cadastro de Cliente');
-    console.log('2. Cadastro de mesas');
-    console.log('3. Cadastro de produtos');
-    console.log('4. Cadatro de tipo de crédito');
-    console.log('5. Cadastro da venda');
+    console.log('1. Cadastrar Cliente');
+    console.log('2. Cadastrar mesas');
+    console.log('3. Cadastrar produtos');
+    console.log('4. Cadatrar tipo de crédito');
+    console.log('5. Cadastrar uma venda');
     console.log('6. Sair');
     promptOpcao.get(['opcao'],function(err,result){
         if(err){return onErr(err);}
         switch(result.opcao){
             case '1':
-                let continuar ='N';
+                continuar ='N';
                 let pCPF=String;
                 let pNomeCL=String;
                 while (continuar==='N' || continuar==='n'){
@@ -52,22 +53,47 @@ function exibirMenu(){
                 script.inserirCliente(pCPF,pNomeCL);
                 exibirMenu();
                 break;
+
             case '2':
-                console.log('vc escolheu 2');
+                let pNomeMesa = String;
+                continuar='N';
+                while (continuar==='N' || continuar==='n'){
+                    pNomeMesa = promptEntrada('Digita o nome da mesa:(Ex.:Mesa01) ');
+                    continuar = promptEntrada('Nome da mesa foi '+ pNomeMesa + ' está correto?(Y/N)');
+                };
+                script.inserirMesa(pNomeMesa);
                 exibirMenu();
                 break;
+
             case '3':
-                console.log('vc escolheu 3');
+                let pDescProd=STRING, pQtdProd=INTEGER, pVL_Prod=DOUBLE;
+                continuar='N'
+                while(continuar==='N' || continuar==='n'){
+                    pDescProd=promptEntrada('Digita nome do produto: ');
+                    pQtdProd=promptEntrada('Digita a quantidade para o estoque: ');
+                    pVL_Prod=promptEntrada('Digita o valor unitário: ');
+                    continuar=promptEntrada('Foi cadastrado produto '+pDescProd+' com quantidade '+pQtdProd+' com valor unitário R$'+pVL_Prod+' está correto?(Y/N)');
+                };
+                script.inserirProduto(pDescProd,pQtdProd,pVL_Prod);
                 exibirMenu();
                 break;
+
             case '4':
-                console.log('vc escolheu 4');
+                let pDescTipo = String;
+                continuar='N';
+                while (continuar==='N' || continuar==='n'){
+                    pDescTipo = promptEntrada('Digita a forma de pagamento: ');
+                    continuar = promptEntrada('Forma de pagamento '+ pDescTipo + ' está correto?(Y/N)');
+                };
+                script.inserirTipo(pDescTipo);                
                 exibirMenu();
                 break;
+
             case '5':
                 console.log('vc escolheu 5');
                 exibirMenu();
                 break;
+                
             case '6':
                 console.log('vc escolheu 6');
                 break;
