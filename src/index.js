@@ -27,7 +27,6 @@ function limparTerminal(){
     });
 }
 
-
 function exibirMenu(){
     console.log('----------------------------------------------');
     console.log('\n Bem-vindo ao restaurante LA CARTE!!');
@@ -46,7 +45,8 @@ function exibirMenu(){
                 let pCPF=String;
                 let pNomeCL=String;
                 while (continuar==='N' || continuar==='n'){
-                    pCPF = promptEntrada('Digita o CPF: ');
+                    console.log('-----------------------------------------------------------------------------------------------------');
+                    pCPF = script.limitarCPF(promptEntrada('Digita o CPF: '),11);
                     pNomeCL = promptEntrada('Digita o nome: ');
                     continuar = promptEntrada('CPF do Cliente '+ pCPF + ' nome do cliente '+pNomeCL+' está correto?(Y/N)');
                 };
@@ -58,6 +58,7 @@ function exibirMenu(){
                 let pNomeMesa = String;
                 continuar='N';
                 while (continuar==='N' || continuar==='n'){
+                    console.log('-----------------------------------------------------------------------------------------------------');
                     pNomeMesa = promptEntrada('Digita o nome da mesa:(Ex.:Mesa01) ');
                     continuar = promptEntrada('Nome da mesa foi '+ pNomeMesa + ' está correto?(Y/N)');
                 };
@@ -69,9 +70,10 @@ function exibirMenu(){
                 let pDescProd=STRING, pQtdProd=INTEGER, pVL_Prod=DOUBLE;
                 continuar='N'
                 while(continuar==='N' || continuar==='n'){
+                    console.log('-----------------------------------------------------------------------------------------------------');
                     pDescProd=promptEntrada('Digita nome do produto: ');
                     pQtdProd=promptEntrada('Digita a quantidade para o estoque: ');
-                    pVL_Prod=promptEntrada('Digita o valor unitário: ');
+                    pVL_Prod=parseFloat(promptEntrada('Digita o valor unitário: ').replace(',','.'));
                     continuar=promptEntrada('Foi cadastrado produto '+pDescProd+' com quantidade '+pQtdProd+' com valor unitário R$'+pVL_Prod+' está correto?(Y/N)');
                 };
                 script.inserirProduto(pDescProd,pQtdProd,pVL_Prod);
@@ -82,6 +84,7 @@ function exibirMenu(){
                 let pDescTipo = String;
                 continuar='N';
                 while (continuar==='N' || continuar==='n'){
+                    console.log('-----------------------------------------------------------------------------------------------------');
                     pDescTipo = promptEntrada('Digita a forma de pagamento: ');
                     continuar = promptEntrada('Forma de pagamento '+ pDescTipo + ' está correto?(Y/N)');
                 };
@@ -90,10 +93,20 @@ function exibirMenu(){
                 break;
 
             case '5':
+                continuar='N';
+                let pQtdPessoas = INTEGER;
+                let pCPFMesa = STRING, pCPFConsulta = STRING;
+                let pMesaPessoa=STRING;
+                let pProdMesa = STRING;
+                
+                while (continuar==='N' || continuar==='n'){
+                    pQtdPessoas=promptEntrada('Digita nº de pessoas na mesa: ');
+                    //pCPFConsulta=
+                }
                 console.log('vc escolheu 5');
                 exibirMenu();
                 break;
-                
+
             case '6':
                 console.log('vc escolheu 6');
                 break;

@@ -244,9 +244,21 @@ function CriarTabelas(){
 }
 //-----------------------------------------------------------------------
 
-
-
-
+async function consultarCliente(vCPFCL){
+  try{
+    const ClienteCPF = await Clientes.findOne({
+      where:{cpf:vCPFCL},
+      attributes:['cpf']
+    });
+    if (ClienteCPF){
+      console.log(ClienteCPF);
+    }else{
+      console.log('CPF não localizado');
+    }
+  }catch ( error ){
+    console.error('Erro ao localizar CPF',error);
+  }
+}
 
 //exporta os modulos e funções 
 module.exports = {
@@ -261,5 +273,13 @@ module.exports = {
   inserirCliente,
   inserirMesa,
   inserirProduto,
-  inserirTipo
+  inserirTipo,
+  limitarCPF
 };
+
+function limitarCPF(str, limite) {
+  if (str.length > limite) {
+      return str.slice(0, limite);
+  }
+  return str;
+}
