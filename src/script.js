@@ -12,7 +12,7 @@ const sequelize = new Sequelize({
   logging:false
 });
 //---------------------------------------------------------------------------------
-
+Conexao();
 //definindo as tabelas--------------------------------------
 const {DataTypes} = require('sequelize');
 const { error } = require('console');
@@ -78,17 +78,7 @@ const Vendas = sequelize.define('tb_vendas',{
       type:DataTypes.INTEGER,
       allowNull:false,
       primaryKey:true,
-      unique:true
-    },
-
-    id_mesa:{
-      type:DataTypes.INTEGER,
-      allowNull:false
-    },
-
-    id_cpf:{
-      type:DataTypes.INTEGER,
-      allowNull:false
+      unique:false
     },
 
     id_prod:{
@@ -101,7 +91,7 @@ const Vendas = sequelize.define('tb_vendas',{
       allowNull:false
     },
 
-    vl_venda:{
+    vl_venda_prod:{
       type:DataTypes.DOUBLE,
       allowNull:false
     }
@@ -113,7 +103,12 @@ const Vendas = sequelize.define('tb_vendas',{
       type:DataTypes.INTEGER,
       allowNull:false,
       primaryKey:true,
-      unique:true
+      unique:false
+    },
+
+    id_cpf:{
+      type:DataTypes.INTEGER,
+      allowNull:false
     },
 
     id_venda:{
@@ -122,6 +117,11 @@ const Vendas = sequelize.define('tb_vendas',{
     },
 
     id_tipo:{
+      type:DataTypes.INTEGER,
+      allowNull:false
+    },
+
+    id_mesa:{
       type:DataTypes.INTEGER,
       allowNull:false
     },
@@ -228,7 +228,7 @@ async function inserirTipo(vDescPag){
 //Função para criar o banco de dados
 async function syncDatabase() {
   try {
-    await sequelize.sync({ force: true }); // Use { force: true } apenas se quiser forçar a recriação das tabelas
+    await sequelize.sync({ alter: true }); // Use { force: true } apenas se quiser forçar a recriação das tabelas
     console.log('Banco de dados sincronizado com sucesso.');
   } catch (error) {
     console.error('Erro ao sincronizar o banco de dados.', error);
@@ -242,24 +242,69 @@ function CriarTabelas(){
     syncDatabase();
   };
 }
-//-----------------------------------------------------------------------
-
-async function consultarCliente(vCPFCL){
-  try{
-    const ClienteCPF = await Clientes.findOne({
-      where:{cpf:vCPFCL},
-      attributes:['cpf']
-    });
-    if (ClienteCPF){
-      console.log(ClienteCPF);
-    }else{
-      console.log('CPF não localizado');
-    }
-  }catch ( error ){
-    console.error('Erro ao localizar CPF',error);
+function Conexao(){
+  
+  try {
+    sequelize.authenticate();
+    //Clientes.init(sequelize);
+  } catch (error) {
+    console.error(error);
   }
 }
 
+//-----------------------------------------------------------------------
+
+async function encontrarClientePorCPF(pCPF) {
+  try {
+    const cliente = await Clientes.findOne({
+      attributes: ['nome_cliente'],
+      where: {
+        cpf: pCPF
+      }
+    });
+
+    if (cliente) {
+      return cliente.nome_cliente;
+    } else {
+      return null; // Retorna null se não encontrar nenhum cliente com o CPF fornecido
+    }
+  } catch (error) {
+    console.error('Erro ao buscar cliente por CPF:', error);
+    throw error; // Lança o erro para ser tratado em um nível superior, se necessário
+  }
+}
+async function encontrarMesa(pMesa) {
+  try {
+    const mesa = await Mesas.findOne({
+      attributes: ['id'],
+      where: {
+        nome_mesa: pMesa
+      }
+    });
+
+    if (mesa) {
+      return mesa.id;
+    } else {
+      return null; // Retorna null se não encontrar nenhum cliente com o CPF fornecido
+    }
+  } catch (error) {
+    console.error('Erro ao buscar nome da mesa:', error);
+    throw error; // Lança o erro para ser tratado em um nível superior, se necessário
+  }
+}
+
+/*function consultar(vCPFCons) {
+  const sqlite3= require('sqlite3').verbose();
+  const db = new sqlite3.Database('./BD/dbVendas.db');
+  db.each('SELECT CPF, NOME_CLIENTE FROM TB_CLIENTES where CPF=?',[vCPFCons],function(err, row) {
+    if(row===1){
+      return true
+    }else{
+      return false
+    }
+    //const resultado=row.nome_cliente;
+  });
+}*/
 //exporta os modulos e funções 
 module.exports = {
   Clientes,
@@ -274,7 +319,10 @@ module.exports = {
   inserirMesa,
   inserirProduto,
   inserirTipo,
-  limitarCPF
+  limitarCPF,
+  encontrarClientePorCPF,
+  Conexao,
+  encontrarMesa
 };
 
 function limitarCPF(str, limite) {
