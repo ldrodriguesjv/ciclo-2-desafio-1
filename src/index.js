@@ -8,7 +8,7 @@ let total = 0;
 let sair = 'n';
 let continuar = 's';
 let pgorjeta = 0;
-
+let pgorjetas=0;
 
 
 console.log('-------------------------------------------------------');
@@ -16,6 +16,11 @@ console.log('------------Controle de Venda Restaurante--------------')
 
 let opcaopg=prompt('Qual é a forma de pagamento?' );
 var gorjet = prompt('Deseja incluir gorjeta?(S/N)');
+
+if(gorjet.toLowerCase='s'){
+    pgorjetas=prompt('Qual é porcentagem da gorjeta?' );
+};
+
 let qtdpessoa = prompt('Quantas pessoas na mesa?');
 
 while (sair.toLowerCase() === 'n') {
@@ -23,7 +28,7 @@ while (sair.toLowerCase() === 'n') {
     nome = prompt('Digite o nome do produto: ');
 
     // Captura o preço do produto
-    preco = parseFloat(prompt('Digite o preço do produto: '));
+    preco = parseFloat(prompt('Digite o preço do produto: ').replace(',','.'));
 
     // Adiciona o produto ao array
     produtos.push({ nome: nome, preco: preco });
@@ -59,8 +64,8 @@ if (opcaopg.toLowerCase() === 'pix' || opcaopg.toLowerCase() ==='dinheiro') {
 
 if (gorjet.toLowerCase() === 's') {
 
-    pgorjeta = (total * (1 + 0.05)) - total;
-    total = total * (1 + 0.05);
+    pgorjeta = (total * (1 + (parseFloat(pgorjetas)/100))) - total;
+    total = total +pgorjeta// (1 + 0.05);
 }
 
 console.log('Total da Venda R$' + total.toFixed(2));
