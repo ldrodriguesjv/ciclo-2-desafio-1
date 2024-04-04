@@ -3,11 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Restaurante La carte</title>
+    <style>
+        
+.tabel {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tabel th, .tabel td {
+    border: 1px solid #caf18f;
+    text-align: left;
+    padding: 8px;
+}
+
+.tabel th {
+    background-color: #a5d12e;
+}
+body {
+            background-color: rgb(239, 226, 192);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 5%;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 5%;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #010e01;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            align-content: center;
+        }
+    </style>
 </head>
 <body>
+    <h1 class="restaurante">Restaurante La Carte</h1>
+    <h2 class="comanda">Comanda</h2>
 
+<button onclick="adicionarLinha()">Adicionar Produtos</button>
+    
+<table id="tabela" class="tabel">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Preço</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- As linhas serão adicionadas aqui -->
+    </tbody>
+</table>
+<hr>
+<div>
+    <h3 id="vtotal">Total da Venda: 0.00</h3> 
+    <h3 id="vdescontos">Valor Com Descontos: 0.00</h3>
+    <h3 id="vdoacao">Valor da Gorjeta: 0.00</h3>
+    <h3 id="totalVenda">Valor Total Por Pessoa: 0.00</h3>
+</div>
 
-    <script src="./src/index.js"></script>   
+<script>
+    let totalPreco = 0;
+    let doacao = 0;
+    let gorjetas = 0;
+    let descontos = 0;
+    let valorTotal = 0; 
+    let totalComDescontosEGorjetas = 0;
+    let opcaopg = prompt("Qual a forma de pagamento?");  
+    let pgorjeta = prompt("Deseja dar gorjeta?(s/n)");
+    if(pgorjeta.toLowerCase() === 's') {
+    gorjetas = parseFloat(prompt("Qual a porcentagem da gorjeta?").replace(',','.'));
+    };
+
+    
+    let qtdpessoa = prompt("Mesa para quantas pessoas?");
+
+    
+
+function adicionarLinha() {
+    let produto = prompt("Informe qual o produto:");
+    let preco = prompt("Informe o preço do produto:");
+    let vpreco = parseFloat(preco.replace(',' , '.')).toFixed(2);
+    let tabela = document.getElementById("tabela");
+    let novaLinha = tabela.insertRow(-1);
+    let cel1 = novaLinha.insertCell(0);
+    let cel2 = novaLinha.insertCell(1);
+    cel1.innerHTML=produto;
+    cel2.innerHTML=vpreco;
+    totalizador();
+   
+    }
+    function totalizador() {
+        let vtabela = document.getElementById("tabela");
+        totalPreco = 0;
+        for (let i=1; i<vtabela.rows.length; i++){
+            totalPreco += parseFloat(vtabela.rows[i].cells[1].innerHTML);
+        }
+    
+
+document.getElementById("vtotal").innerHTML="Total da Venda: " + totalPreco.toFixed(2);
+
+if(opcaopg.toLowerCase() === 'pix' || opcaopg.toLowerCase() === 'dinheiro') {
+    descontos = totalPreco * (1 - 0.1);
+}
+document.getElementById('vdescontos').innerHTML="Valor Com Descontos: " + descontos.toFixed(2);
+
+if(pgorjeta.toLowerCase() === 's') {
+        doacao = (totalPreco * (1+(parseFloat(gorjetas)/100))) - totalPreco;
+        }
+document.getElementById("vdoacao").innerHTML="Valor da Gorjeta: " + doacao.toFixed(2);  
+
+totalComDescontosEGorjetas = (totalPreco - descontos) + doacao.toFixed(2);
+if(qtdpessoa > 0) {
+    valorTotal = totalComDescontosEGorjetas / qtdpessoa;
+}
+document.getElementById("totalVenda").innerHTML="Valor Total Por Pessoa: " + valorTotal.toFixed(2);
+    }
+</script>
 </body>
 </html>
