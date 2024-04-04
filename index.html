@@ -45,13 +45,13 @@ body {
         }
     </style>
 </head>
-<body>
+<div>
     <h1 class="restaurante">Restaurante La Carte</h1>
     <h2 class="comanda">Comanda</h2>
-
-<button onclick="adicionarLinha()">Adicionar Produtos</button>
-    
-<table id="tabela" class="tabel">
+    <div></div>
+    <button class="btn" onclick="adicionarLinha()">Adicionar Produtos</button>
+</div>
+    <table id="tabela" class="tabel">
     <thead>
         <tr>
             <th>Produto</th>
@@ -69,7 +69,6 @@ body {
     <h3 id="vdoacao">Valor da Gorjeta: 0.00</h3>
     <h3 id="totalVenda">Valor Total Por Pessoa: 0.00</h3>
 </div>
-
 <script>
     let totalPreco = 0;
     let doacao = 0;
@@ -81,12 +80,8 @@ body {
     let pgorjeta = prompt("Deseja dar gorjeta?(s/n)");
     if(pgorjeta.toLowerCase() === 's') {
     gorjetas = parseFloat(prompt("Qual a porcentagem da gorjeta?").replace(',','.'));
-    };
-
-    
+    }
     let qtdpessoa = prompt("Mesa para quantas pessoas?");
-
-    
 
 function adicionarLinha() {
     let produto = prompt("Informe qual o produto:");
@@ -99,16 +94,14 @@ function adicionarLinha() {
     cel1.innerHTML=produto;
     cel2.innerHTML=vpreco;
     totalizador();
-   
     }
-    function totalizador() {
-        let vtabela = document.getElementById("tabela");
+function totalizador() {
+    let vtabela = document.getElementById("tabela");
         totalPreco = 0;
-        for (let i=1; i<vtabela.rows.length; i++){
-            totalPreco += parseFloat(vtabela.rows[i].cells[1].innerHTML);
-        }
+    for (let i=1; i<vtabela.rows.length; i++){
+        totalPreco += parseFloat(vtabela.rows[i].cells[1].innerHTML);
+    }
     
-
 document.getElementById("vtotal").innerHTML="Total da Venda: " + totalPreco.toFixed(2);
 
 if(opcaopg.toLowerCase() === 'pix' || opcaopg.toLowerCase() === 'dinheiro') {
@@ -117,11 +110,11 @@ if(opcaopg.toLowerCase() === 'pix' || opcaopg.toLowerCase() === 'dinheiro') {
 document.getElementById('vdescontos').innerHTML="Valor Com Descontos: " + descontos.toFixed(2);
 
 if(pgorjeta.toLowerCase() === 's') {
-        doacao = (totalPreco * (1+(parseFloat(gorjetas)/100))) - totalPreco;
+        doacao = (descontos * (1+(parseFloat(gorjetas)/100))) - descontos;
         }
 document.getElementById("vdoacao").innerHTML="Valor da Gorjeta: " + doacao.toFixed(2);  
 
-totalComDescontosEGorjetas = (totalPreco - descontos) + doacao.toFixed(2);
+totalComDescontosEGorjetas = descontos + parseFloat (doacao.toFixed(2));
 if(qtdpessoa > 0) {
     valorTotal = totalComDescontosEGorjetas / qtdpessoa;
 }
